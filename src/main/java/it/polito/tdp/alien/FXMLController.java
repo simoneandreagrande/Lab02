@@ -5,7 +5,9 @@
 package it.polito.tdp.alien;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,7 +18,7 @@ import javafx.scene.control.TextField;
 
 public class FXMLController {
 	
-	AlienTranslator model;
+//	AlienTranslator model;
 	public AlienTranslator translator = new AlienTranslator();
 
     @FXML // ResourceBundle that was given to the FXMLLoader
@@ -52,10 +54,12 @@ public class FXMLController {
     
     @FXML
     void stampaDizionario(ActionEvent event) {
-    	for (Map.Entry<String, String> entry : translator.getDictionary().entrySet()) {
-    	    String key = entry.getKey();
-    	    String value = entry.getValue();
-    	    txtDizionario.appendText(key + ": " + value + "\n");
+    	txtCom.setText("");
+    	txtDizionario.clear();
+    	for (Entry<String, List<String>> entry : translator.getDictionary().entrySet()) {
+    	    String parolaAliena = entry.getKey();
+    	    List<String> traduzione = entry.getValue();
+    	    txtDizionario.appendText(parolaAliena + ": " + traduzione.toString() + "\n");
     	}
     	
   
@@ -73,21 +77,22 @@ public class FXMLController {
                 txtCom.setText("Parola aggiunta al dizionario!");
                 txtParola.clear();
             } else {
-            	txtCom.setText("Le parole devono contenere solo lettere alfabetica");
+            	txtCom.setText("Le parole devono contenere solo lettere alfabetiche");
             }
         } else if (parole.length == 1) {
             String parolaAliena = parole[0].toLowerCase();
             if (parolaAliena.matches("[a-zA-Z]+")) {
-                String traduzione = translator.cercaTraduzione(parolaAliena);
+                List<String> traduzione = translator.cercaTraduzione(parolaAliena);
+//              translator.stampaTraduzioni(String parolaAliena);
                 if (traduzione == null) {
                 	txtCom.setText("Parola non trovata nel dizionario");
                 } else {
                 	txtCom.setText("Parola trovata con successo!");
-                    txtDizionario.setText("Traduzione: " + traduzione);
+                    txtDizionario.setText("Traduzione di '" + parolaAliena + "': " + traduzione);
                 	txtParola.clear();
                 }
             } else {
-                txtCom.setText("La parola deve contenere solo lettere alfabetica");
+                txtCom.setText("La parola deve contenere solo lettere alfabetiche");
             }
         } else {
             txtCom.setText("Inserisci una parola o una coppia di parole separata da uno spazio");
